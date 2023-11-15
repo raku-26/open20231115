@@ -1,10 +1,10 @@
 @echo off
-:: 権限チェック
+:: Check for administrative privileges
 net session >nul 2>&1
 if %errorLevel% == 0 (
-    echo 管理者権限確認済み...
+    echo Administrator privileges confirmed...
 ) else (
-    echo 管理者権限を要求中...
+    echo Requesting administrator privileges...
     goto UACPrompt
 )
 goto gotAdmin
@@ -21,3 +21,9 @@ exit /B
 :gotAdmin
 pushd "%CD%"
 CD /D "%~dp0"
+
+:: Your original command goes here
+python "C:\Users\luoho\OneDrive\桌面\buyhouse.py"
+
+:: End of the script
+pause
