@@ -1,0 +1,23 @@
+@echo off
+:: 権限チェック
+net session >nul 2>&1
+if %errorLevel% == 0 (
+    echo 管理者権限確認済み...
+) else (
+    echo 管理者権限を要求中...
+    goto UACPrompt
+)
+goto gotAdmin
+
+:UACPrompt
+echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+set params = %*:"=""
+echo UAC.ShellExecute "cmd.exe", "/c %~s0 %params%", "", "runas", 1 >> "%temp%\getadmin.vbs"
+
+"%temp%\getadmin.vbs"
+del "%temp%\getadmin.vbs"
+exit /B
+
+:gotAdmin
+pushd "%CD%"
+CD /D "%~dp0"
