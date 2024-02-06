@@ -1,0 +1,23 @@
+import requests
+
+# URL to which the request will be sent
+url = "YOUR_ENDPOINT_URL"
+
+# Your actual data here
+data = {
+    "auth_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "from": "XXXXXXXXXXXXXXXXXXXXXXXX",
+    "type": "text",
+    "text": "文言送信\n問題ないはず"
+}
+
+# Setting up the headers
+headers = {
+    "Content-Type": "application/json"
+}
+
+# Sending the POST request
+response = requests.post(url, json=data, headers=headers)
+
+# Printing the response
+print(response.text)
