@@ -1,23 +1,16 @@
 import requests
 
-# URL to which the request will be sent
-url = "YOUR_ENDPOINT_URL"
-
-# Your actual data here
+url = "在这里填写请求的URL"
+headers = {
+    "Content-Type": "application/json",
+}
 data = {
     "auth_token": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     "from": "XXXXXXXXXXXXXXXXXXXXXXXX",
     "type": "text",
-    "text": "文言送信\n問題ないはず"
+    "text": "文言送信\n問題ないはず",
 }
 
-# Setting up the headers
-headers = {
-    "Content-Type": "application/json"
-}
+response = requests.post(url, headers=headers, json=data)
 
-# Sending the POST request
-response = requests.post(url, json=data, headers=headers)
-
-# Printing the response
 print(response.text)
