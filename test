@@ -1,16 +1,1 @@
-import requests
 
-url = "https://chatapi.viber.com/pa/post"
-headers = {
-    "Content-Type": "application/json",
-}
-data = {
-    "auth_token": "525efbf6b0f022ba-4c4a7aca68b-4c6c2407547f45a5",
-    "from": "/f4Fx/+swl52FKN6opSg==",
-    "type": "text",
-    "text": "20240206_1",
-}
-
-response = requests.post(url, headers=headers, json=data)
-
-print(response.text)
