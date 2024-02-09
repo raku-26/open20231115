@@ -16,8 +16,10 @@ else:
     # 打印最新文件的路径
     print(f"最新的文件是: {latest_file}")
 
-    # 如果你还想读取并打印最新文件的内容，可以像这样读取：
-    with open(latest_file, 'r') as file:
-        content = file.read()
-        print(content)
-
+    # 尝试读取并打印最新文件的内容，这里假设使用'utf-8'编码
+    try:
+        with open(latest_file, 'r', encoding='utf-8') as file:
+            content = file.read()
+            print(content)
+    except UnicodeDecodeError:
+        print("读取文件时发生编码错误，请尝试不同的编码。")
