@@ -1,1 +1,23 @@
+import os
+
+# 设置目标文件夹路径
+folder_path = 'your_folder_path'
+
+# 获取文件夹中所有文件的路径
+files = [os.path.join(folder_path, f) for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+
+# 检查是否存在文件
+if not files:
+    print("文件夹中没有文件。")
+else:
+    # 根据文件的修改时间找到最新的文件
+    latest_file = max(files, key=os.path.getmtime)
+
+    # 打印最新文件的路径
+    print(f"最新的文件是: {latest_file}")
+
+    # 如果你还想读取并打印最新文件的内容，可以像这样读取：
+    with open(latest_file, 'r') as file:
+        content = file.read()
+        print(content)
 
