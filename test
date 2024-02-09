@@ -23,3 +23,19 @@ else:
             print(content)
     except UnicodeDecodeError:
         print("读取文件时发生编码错误，请尝试不同的编码。")
+
+
+
+import chardet
+
+# 首先，以二进制模式读取文件的一部分来检测编码
+with open(latest_file, 'rb') as file:
+    raw_data = file.read(10000)  # 读取前10000字节来判断编码
+    result = chardet.detect(raw_data)
+    encoding = result['encoding']
+
+# 使用检测到的编码来读取整个文件
+with open(latest_file, 'r', encoding=encoding) as file:
+    content = file.read()
+    print(f"检测到的编码为：{encoding}")
+    print(content)
