@@ -1,0 +1,41 @@
+Sub ExportCommentsToTextFile()
+    Dim pptSlide As Slide
+    Dim pptShape As Shape
+    Dim FileNum As Integer
+    Dim FilePath As String
+    
+    ' 设置文本文件的保存路径和文件名
+    FilePath = "C:\ppt_comments.txt"
+    
+    ' 创建或覆盖文本文件
+    FileNum = FreeFile
+    Open FilePath For Output As #FileNum
+    
+    ' 遍历每一个幻灯片和幻灯片中的每一个形状
+    For Each pptSlide In ActivePresentation.Slides
+        For Each pptShape In pptSlide.Shapes
+            If pptShape.Type = msoGroup Then
+                Dim subShape As Shape
+                For Each subShape In pptShape.GroupItems
+                    If subShape.HasTextFrame Then
+                        If subShape.TextFrame.HasText Then
+                            ' 将注解写入文本文件
+                            Print #FileNum, "Slide " & pptSlide.SlideIndex & ", Shape " & pptShape.Name & ": " & subShape.TextFrame.TextRange.Text
+                        End If
+                    End If
+                Next subShape
+            ElseIf pptShape.HasTextFrame Then
+                If pptShape.TextFrame.HasText Then
+                    ' 将注解写入文本文件
+                    Print #FileNum, "Slide " & pptSlide.SlideIndex & ", Shape " & pptShape.Name & ": " & pptShape.TextFrame.TextRange.Text
+                End If
+            End If
+        Next pptShape
+    Next pptSlide
+    
+    ' 关闭文件
+    Close #FileNum
+    
+    ' 完成消息
+    MsgBox "Comments exported to " & FilePath
+End Sub
