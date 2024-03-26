@@ -51,3 +51,40 @@ def get_vix():
     finally:
         driver.quit()
     return rate_value
+
+
+
+def jp_cal_profit(user):
+    options = Options()
+    options.add_argument("--headless") 
+    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    url = "https://site1.sbisec.co.jp/" 
+    driver.get(url)
+    user_id_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[name='user_id']")))
+    user_id_input.send_keys(user.account)  
+    user_password_input = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[name='user_password']")))
+    user_password_input.send_keys(user.password)
+    login_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "input[name='ACT_login']")))
+    login_button.click()
+    account_button = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, "img[alt='口座管理']")))
+    account_button.click()
+    try:
+        table = WebDriverWait(driver, 30).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'table[border="0"][cellspacing="1"][cellpadding="1"][width="400"]')))
+    except NoSuchElementException:
+        print("没有找到元素")
+    rows = table.find_elements(By.TAG_NAME, 'tr')
+    jp_total = 0  
+    fund_rows = []  
+    for row_number, row in enumerate(rows, start=1):
+        cells = row.find_elements(By.TAG_NAME, 'td')
+        for column_number, cell in enumerate(cells, start=1):
+            if cell.text and (funds_JP.name1 in cell.text):
+                fund_rows.append(row_number)
+        # print(' | '.join([cell.text for cell in cells]))
+    for fund_row in fund_rows:
+        if fund_row < len(rows):
+            below_cell_value = rows[fund_row].find_elements(By.TAG_NAME, 'td')[3].text
+            print(f'Below cell: {below_cell_value}')
+            jp_total += int(below_cell_value.replace(',', '').replace('+', ''))
+    print(f'jp收益: {jp_total}')
+    return jp_total
