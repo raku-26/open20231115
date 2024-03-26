@@ -1,0 +1,37 @@
+如果您想要提取的是PPT每一页下方的注解（通常出现在演讲者备注栏），而不是幻灯片中的文字，那么需要修改VBA脚本来专门提取这些备注。以下是一个针对性提取演讲者备注的VBA脚本示例：
+
+```vba
+Sub ExportSpeakerNotesToTextFile()
+    Dim pptSlide As Slide
+    Dim FileNum As Integer
+    Dim FilePath As String
+    
+    ' 设置文本文件的保存路径和文件名
+    FilePath = "C:\ppt_speaker_notes.txt"
+    
+    ' 创建或覆盖文本文件
+    FileNum = FreeFile
+    Open FilePath For Output As #FileNum
+    
+    ' 遍历每一个幻灯片
+    For Each pptSlide In ActivePresentation.Slides
+        ' 检查是否有演讲者备注
+        If pptSlide.NotesPage.Shapes.Placeholders.Count > 1 Then
+            If pptSlide.NotesPage.Shapes.Placeholders(2).TextFrame.HasText Then
+                ' 将演讲者备注写入文本文件
+                Print #FileNum, "Slide " & pptSlide.SlideIndex & ": " & pptSlide.NotesPage.Shapes.Placeholders(2).TextFrame.TextRange.Text
+            End If
+        End If
+    Next pptSlide
+    
+    ' 关闭文件
+    Close #FileNum
+    
+    ' 完成消息
+    MsgBox "Speaker notes exported to " & FilePath
+End Sub
+```
+
+此脚本专门检查每张幻灯片的演讲者备注栏，并将找到的备注文本导出到指定的文本文件中。请按照之前的步骤创建和运行此脚本，记得修改 `FilePath` 变量为您希望保存文件的具体位置和文件名。
+
+通过运行这个脚本，您将能够将所有演讲者备注从PPT中提取出来，汇总到一个文本文件中。
