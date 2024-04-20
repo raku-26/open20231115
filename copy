@@ -1,0 +1,41 @@
+python化的工作
+
+文件夹path ： a5
+
+每天都要在 a5里找到文件名字包含昨天日期 yyyymmdd 的 txt，复制一遍，然后把名字改成今天的日期。
+
+请你python化
+
+
+
+
+
+import os
+import shutil
+from datetime import datetime, timedelta
+
+def copy_and_rename_files(directory):
+    # 获取今天和昨天的日期
+    today = datetime.now()
+    yesterday = today - timedelta(days=1)
+
+    # 将日期格式化为yyyymmdd格式
+    yesterday_str = yesterday.strftime('%Y%m%d')
+    today_str = today.strftime('%Y%m%d')
+
+    # 遍历目录中的所有文件
+    for filename in os.listdir(directory):
+        # 检查文件名是否包含昨天的日期
+        if yesterday_str in filename and filename.endswith('.txt'):
+            old_file_path = os.path.join(directory, filename)
+            # 创建新的文件名，替换日期部分为今天的日期
+            new_filename = filename.replace(yesterday_str, today_str)
+            new_file_path = os.path.join(directory, new_filename)
+
+            # 复制文件到新文件名
+            shutil.copyfile(old_file_path, new_file_path)
+            print(f"Copied and renamed {old_file_path} to {new_file_path}")
+
+# 使用示例
+directory_path = 'a5'
+copy_and_rename_files(directory_path)
