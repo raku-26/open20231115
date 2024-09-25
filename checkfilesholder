@@ -1,0 +1,27 @@
+import os
+
+def check_directories_exist(file_fullpaths):
+    results = {}
+    for file_fullpath in file_fullpaths:
+        directory = os.path.dirname(file_fullpath)
+        if os.path.exists(directory):
+            results[file_fullpath] = True
+        else:
+            results[file_fullpath] = False
+    return results
+
+
+file_fullpaths = [
+    "/path/to/your/file1.txt",
+    "/path/to/your/file2.txt",
+    
+]
+
+results = check_directories_exist(file_fullpaths)
+
+
+for path, exists in results.items():
+    if exists:
+        print(f"filesholder '{os.path.dirname(path)}' 存在。")
+    else:
+        print(f"文件夹 '{os.path.dirname(path)}' 不存在。")
