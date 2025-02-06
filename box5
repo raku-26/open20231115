@@ -1,0 +1,29 @@
+from boxsdk import Client, OAuth2
+
+# 认证
+auth = OAuth2(
+    client_id='YOUR_CLIENT_ID',
+    client_secret='YOUR_CLIENT_SECRET',
+    access_token='YOUR_ACCESS_TOKEN',
+)
+client = Client(auth)
+
+# 搜索文件名为 'test.csv' 的文件（限制最多返回 10 个）
+query = 'test.csv'
+items = client.search().query(query, type='file', limit=10)
+
+# 已知的部分路径
+partial_path = 'A/B/C/'
+
+# 只获取第一个符合条件的文件
+matching_file = next(
+    (item for item in items if partial_path in '/' + '/'.join([entry['name'] for entry in item.path_collection['entries']]) + '/' + item.name),
+    None
+)
+
+if matching_file:
+    path_collection = matching_file.path_collection['entries']
+    full_path = '/' + '/'.join([entry['name'] for entry in path_collection]) + '/' + matching_file.name
+    print(f'找到文件: {full_path} (ID: {matching_file.id})')
+else:
+    print('未找到匹配的文件')
