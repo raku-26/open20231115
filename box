@@ -1,0 +1,21 @@
+from boxsdk import Client, OAuth2
+
+# 使用您的客户端 ID、客户端密钥和访问令牌进行身份验证
+oauth2 = OAuth2(
+    client_id='YOUR_CLIENT_ID',
+    client_secret='YOUR_CLIENT_SECRET',
+    access_token='YOUR_ACCESS_TOKEN',
+)
+client = Client(oauth2)
+
+# 定义递归函数来遍历文件夹
+def list_items(folder, indent=0):
+    items = folder.get_items()
+    for item in items:
+        print(' ' * indent + f'{item.type.capitalize()}: {item.name}')
+        if item.type == 'folder':
+            list_items(client.folder(folder_id=item.id), indent + 4)
+
+# 从根文件夹开始
+root_folder = client.folder(folder_id='0')
+list_items(root_folder)
