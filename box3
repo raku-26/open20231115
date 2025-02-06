@@ -1,0 +1,29 @@
+import requests
+
+# 替换为您的 Box API 访问令牌
+ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
+FILE_ID = "YOUR_FILE_ID"
+
+# 获取文件信息
+def get_file_info(file_id):
+    headers = {
+        "Authorization": f"Bearer {ACCESS_TOKEN}"
+    }
+    response = requests.get(f"https://api.box.com/2.0/files/{file_id}", headers=headers)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"获取文件信息失败: {response.json()}")
+        return None
+
+# 构建文件完整路径
+def build_file_path(file_info):
+    path_collection = file_info["path_collection"]["entries"]
+    full_path = "/" + "/".join(folder["name"] for folder in path_collection) + f'/{file_info["name"]}'
+    return full_path
+
+# 主程序
+file_info = get_file_info(FILE_ID)
+if file_info:
+    file_path = build_file_path(file_info)
+    print("文件完整路径:", file_path)
