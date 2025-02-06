@@ -1,0 +1,59 @@
+import requests
+
+# 替换为你的 Box API 访问令牌
+ACCESS_TOKEN = "YOUR_ACCESS_TOKEN"
+FILE_NAME = "test111.csv"
+
+# Box API 端点
+SEARCH_URL = "https://api.box.com/2.0/search"
+FILE_INFO_URL = "https://api.box.com/2.0/files/{}"
+
+# 搜索文件
+def search_file(file_name):
+    headers = {
+        "Authorization": f"Bearer {ACCESS_TOKEN}"
+    }
+    params = {
+        "query": file_name,
+        "type": "file",  # 限制搜索范围为文件
+        "ancestor_folder_ids": "0"  # 0 代表从根目录开始搜索
+    }
+    
+    response = requests.get(SEARCH_URL, headers=headers, params=params)
+    
+    if response.status_code == 200:
+        results = response.json().get("entries", [])
+        if results:
+            return results[0]["id"]  # 返回找到的第一个文件的 ID
+        else:
+            print("未找到文件")
+            return None
+    else:
+        print(f"搜索失败: {response.json()}")
+        return None
+
+# 获取文件路径
+def get_file_path(file_id):
+    headers = {
+        "Authorization": f"Bearer {ACCESS_TOKEN}"
+    }
+    
+    response = requests.get(FILE_INFO_URL.format(file_id), headers=headers)
+    
+    if response.status_code == 200:
+        file_info = response.json()
+        path_collection = file_info["path_collection"]["entries"]
+        
+        # 构建完整文件路径
+        full_path = "/" + "/".join(folder["name"] for folder in path_collection) + f'/{file_info["name"]}'
+        return full_path
+    else:
+        print(f"获取文件信息失败: {response.json()}")
+        return None
+
+# 主程序
+file_id = search_file(FILE_NAME)
+if file_id:
+    file_path = get_file_path(file_id)
+    if file_path:
+        print("文件完整路径:", file_path)
