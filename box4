@@ -1,0 +1,25 @@
+from boxsdk import Client, OAuth2
+
+# 认证
+auth = OAuth2(
+    client_id='YOUR_CLIENT_ID',
+    client_secret='YOUR_CLIENT_SECRET',
+    access_token='YOUR_ACCESS_TOKEN',
+)
+client = Client(auth)
+
+# 搜索文件名为 'test.csv' 的文件
+query = 'test.csv'
+items = client.search().query(query, type='file')
+
+# 已知的部分路径
+partial_path = 'A/B/C/'
+
+for item in items:
+    # 获取文件的 path_collection
+    path_collection = item.path_collection['entries']
+    # 构建完整路径
+    full_path = '/' + '/'.join([entry['name'] for entry in path_collection]) + '/' + item.name
+    # 检查完整路径是否包含已知的部分路径
+    if partial_path in full_path:
+        print(f'找到文件: {full_path} (ID: {item.id})')
